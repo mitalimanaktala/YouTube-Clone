@@ -1,16 +1,148 @@
-# React + Vite
+# 🎬 Media Streamer – YouTube Clone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern YouTube-inspired video streaming platform built using **React + Vite**.  
+This project replicates core YouTube functionality including video browsing, search, dynamic recommendations, watch history, and infinite scrolling.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:**  
+👉 https://you-tube-clone-gauf8dt54-mitalis-projects-36610fb2.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🏠 Home page with dynamic video feed
+- ♾ Infinite scroll (Home, Trending, History)
+- 🔥 Trending videos (region-based)
+- 🔎 Search functionality with search history
+- 🎥 Watch page with embedded YouTube player
+- 🎯 Smart video recommendations
+- 🕘 Watch history stored using localStorage
+- 🔄 Scroll-to-top on route change
+- 🧩 Reusable custom hooks (useInfiniteScroll)
+- 📱 Responsive sidebar layout
+- 🔐 API key secured using environment variables
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🧠 Recommendation Logic
+
+The recommendation system works using:
+
+1. `relatedToVideoId` from YouTube Data API  
+2. Fallback title-based search (for Shorts or edge cases)  
+3. Duplicate filtering for clean results  
+
+This ensures recommendations always appear dynamically based on the currently watched video.
+
+---
+
+## 🛠 Tech Stack
+
+- ⚛ **React**
+- ⚡ **Vite**
+- 🎨 **CSS Modules**
+- 🌐 **YouTube Data API v3**
+- 🚀 **Vercel (Deployment)**
+
+---
+
+## 📂 Project Structure
+
+```bash
+src/
+│
+├── api/                 # API integration logic
+├── components/          # Reusable UI components
+├── hooks/               # Custom hooks (useInfiniteScroll)
+├── pages/               # Application pages
+│
+├── App.jsx
+└── main.jsx
+```
+
+---
+
+## ♾ Infinite Scroll Implementation
+
+Implemented using:
+
+- IntersectionObserver API
+- Custom reusable hook
+- Early loading using `rootMargin`
+- Applied to:
+  - Home Page
+  - Trending Page
+  - History Page
+
+This ensures smooth and seamless user experience.
+
+---
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_RAPID_API_KEY=your_youtube_api_key_here
+```
+
+⚠ Do not expose your API key publicly.
+
+---
+
+## 📦 Installation & Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/mitalimanaktala/Youtube-Clone.git
+cd your-repository-name
+npm install
+npm run dev
+```
+
+---
+
+## 🏗 Build for Production
+
+```bash
+npm run build
+```
+
+---
+
+## 🌍 Deployment
+
+This project is deployed using **Vercel**.
+
+To deploy:
+
+1. Connect GitHub repository to Vercel
+2. Add environment variable:
+   - `VITE_RAPID_API_KEY`
+3. Deploy
+
+---
+
+## 👩‍💻 Author
+
+**Mitali Manaktala**  
+B.Tech Computer Science Student  
+Lovely Professional University  
+
+---
+
+## 📌 Future Improvements
+
+- ▶ Autoplay next video
+- 🌙 Dark mode toggle
+- 📊 Real view count formatting
+- 👍 Like / Comment system
+- 🔐 Authentication system
+- 📂 Category-based filtering
+
+---
+
+## ⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub!
