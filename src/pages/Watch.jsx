@@ -1,17 +1,22 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getVideoDetails } from "../api/youtube";
+import { getVideoDetails, getRelatedVideos } from "../api/youtube";
+import VideoCard from "../components/VideoCard";
 import styles from "./Watch.module.css";
 
 function Watch() {
   const { id } = useParams();
   const [videoDetails, setVideoDetails] = useState(null);
+  const [recommended, setRecommended] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const details = await getVideoDetails(id);
         setVideoDetails(details);
+
+        const related = await getRelatedVideos(id);
+        setRecommended(related.videos);
 
         const stored =
           JSON.parse(localStorage.getItem("watchHistory")) || [];
@@ -32,7 +37,6 @@ function Watch() {
 
     fetchData();
   }, [id]);
-
 
   if (!videoDetails) {
     return <p style={{ color: "white", padding: "20px" }}>Loading...</p>;
@@ -57,13 +61,25 @@ function Watch() {
         <p className={styles.meta}>
           {statistics?.viewCount} views
         </p>
-        <p className={styles.description}><b>Description:</b> {snippet.description}</p>
+        <p className={styles.description}>
+          <b>Description:</b> {snippet.description}
+        </p>
       </div>
 
       <div className={styles.sidebar}>
-        <div className={styles.noRec}>
-          No recommendations available
-        </div>
+        {recommended.length > 0 ? (
+          recommended.map((video) => (
+            <VideoCard
+              key={video.id.videoId}
+              video={video}
+              variant="sidebar"
+            />
+          ))
+        ) : (
+          <div className={styles.noRec}>
+            No recommendations available
+          </div>
+        )}
       </div>
     </div>
   );

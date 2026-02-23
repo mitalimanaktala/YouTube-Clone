@@ -69,11 +69,54 @@ export const getVideoDetails = async (videoId) => {
   return data.items?.[0] || null;
 };
 
-export const getRelatedVideos = async (videoId) => {
-  const res = await fetch(
-    `${BASE_URL}/search?part=snippet&relatedToVideoId=${videoId}&type=video&maxResults=12&key=${API_KEY}`
-  );
+export async function getRelatedVideos(videoId, pageToken = "") {
+  if (!videoId) return { videos: [], nextPageToken: null };
 
-  const data = await res.json();
-  return data.items || [];
-};
+  try {
+    const res = await fetch(
+      `${BASE_URL}/search?part=snippet&type=video&relatedToVideoId=${videoId}&maxResults=12&pageToken=${pageToken}&key=${API_KEY}`
+    );
+
+    const data = await res.json();
+    console.log("Related API response:", data);
+
+    if (data.items && data.items.length > 0) {
+      return {
+        videos: data.items,
+        nextPageToken: data.nextPageToken || null,
+      };
+    }
+
+    const videoRes = await fetch(
+      `${BASE_URL}/videos?part=snippet&id=${videoId}&key=${API_KEY}`
+    );
+
+    const videoData = await videoRes.json();
+
+    if (!videoData.items || !videoData.items.length) {
+      return { videos: [], nextPageToken: null };
+    }
+
+    const title = videoData.items[0].snippet.title;
+    const query = title.split(" ").slice(0, 3).join(" ");
+
+    const searchRes = await fetch(
+      `${BASE_URL}/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(
+        query
+      )}&key=${API_KEY}`
+    );
+
+    const searchData = await searchRes.json();
+
+    return {
+      videos:
+        searchData.items?.filter(
+          (item) => item.id.videoId !== videoId
+        ) || [],
+      nextPageToken: null,
+    };
+  } catch (err) {
+    console.error("Recommendation fetch failed:", err);
+    return { videos: [], nextPageToken: null };
+  }
+}
