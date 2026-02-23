@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getTrendingVideos } from "../api/youtube";
 import VideoCard from "../components/VideoCard";
 import ShimmerCard from "../components/ShimmerCard";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import "../index.css";
 
 function Trending() {
   const [videos, setVideos] = useState([]);
   const [nextToken, setNextToken] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchVideos = async (token = "") => {
     setLoading(true);
-    const data = await getTrendingVideos(token,"IN");
 
-    if (token) {
-      setVideos((prev) => [...prev, ...data.videos]);
-    } else {
-      setVideos(data.videos);
-    }
+    const data = await getTrendingVideos(token, "IN");
+
+    setVideos((prev) =>
+      token ? [...prev, ...data.videos] : data.videos
+    );
 
     setNextToken(data.nextPageToken);
     setLoading(false);
@@ -26,6 +26,18 @@ function Trending() {
   useEffect(() => {
     fetchVideos();
   }, []);
+
+  const fetchMore = useCallback(() => {
+    if (nextToken && !loading) {
+      fetchVideos(nextToken);
+    }
+  }, [nextToken, loading]);
+
+  const loaderRef = useInfiniteScroll(
+    fetchMore,
+    !!nextToken,
+    loading
+  );
 
   return (
     <div style={{ padding: "20px" }}>
@@ -41,22 +53,15 @@ function Trending() {
               .map((_, i) => <ShimmerCard key={i} />)}
       </div>
 
-      {nextToken && (
-        <div style={{ textAlign: "center", margin: "30px" }}>
-          <button
-            onClick={() => fetchVideos(nextToken)}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "8px",
-              background: "#8e2de2",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "16px",
-            }}
-          >
-            Load More
-          </button>
+      <div ref={loaderRef} style={{ height: "40px" }} />
+
+      {loading && videos.length > 0 && (
+        <div className="videoGrid" style={{ marginTop: "20px" }}>
+          {Array(4)
+            .fill(0)
+            .map((_, i) => (
+              <ShimmerCard key={i} />
+            ))}
         </div>
       )}
     </div>
