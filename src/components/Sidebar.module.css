@@ -1,0 +1,29 @@
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 200px;
+  height: calc(100vh - 64px);
+   background: linear-gradient(180deg, #5f0a87, #a4508b);
+  padding-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+    min-height: calc(100vh - 60px);
+}
+
+.link {
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  margin: 0 10px;
+  transition: all 0.2s ease;
+}
+
+.link:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
